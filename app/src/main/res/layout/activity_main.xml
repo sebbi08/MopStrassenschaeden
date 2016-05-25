@@ -9,7 +9,7 @@
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="427dp"
         tools:context="de.mop.hs_mannheim.mop_strassenschaeden.MainActivity" />
 
     <Button
@@ -17,6 +17,7 @@
         android:layout_height="60dp"
         android:text="Schaden melden"
         android:id="@+id/sendNewStatus"
-        android:layout_gravity="center_horizontal|bottom" />
+        android:layout_gravity="center_horizontal|bottom"
+        android:onClick="onButtonClick" />
 
 </FrameLayout>

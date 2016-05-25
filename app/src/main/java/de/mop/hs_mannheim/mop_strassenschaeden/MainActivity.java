@@ -1,7 +1,7 @@
 package de.mop.hs_mannheim.mop_strassenschaeden;
 
 import android.Manifest;
-import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -9,11 +9,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,6 +42,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         tracker = new LocationTracker(this);
     }
 
+    public void onButtonClick(View view){
+        if(view.getId() == R.id.sendNewStatus){
+            Intent i = new Intent(MainActivity.this, NewDamageStatusActivity.class);
+            startActivity(i);
+        }
+    }
 
     /**
      * Manipulates the map once available.
