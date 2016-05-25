@@ -64,17 +64,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onConnected(@Nullable Bundle bundle) {
         googleApiClient = tracker.getmGoogleApiClient();
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},555);
-            return;
-        }
-
         setLocation();
 
     }
 
     public void setLocation(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},555);
+            return;
+        }
         Location loc = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         LatLng position = new LatLng(loc.getLatitude(),loc.getLongitude());
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,19.0f));
