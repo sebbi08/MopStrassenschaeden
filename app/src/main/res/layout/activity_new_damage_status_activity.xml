@@ -5,23 +5,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <ImageView
+        android:layout_width="301dp"
+        android:layout_height="174dp"
+        android:id="@+id/picturePreview"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.45" />
 
     <Button
-        android:layout_width="200dp"
+        android:layout_width="118dp"
         android:layout_height="wrap_content"
         android:text="Kamera"
         android:id="@+id/captureDamageButton"
-        android:layout_gravity="center_horizontal"
-    />
+        android:layout_gravity="center_horizontal" />
 
-    <ImageView
-        android:layout_width="350dp"
-        android:layout_height="300dp"
-        android:id="@+id/picturePreview"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/titel"
+        android:hint="Schadenstitel"
+        android:layout_marginTop="20dp" />
 
-    />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/beschreibung"
+        android:hint="Beschreibung"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Abschicken"
+        android:id="@+id/sendStatus"
+        android:layout_gravity="center_horizontal" />
+
 
 </LinearLayout>
