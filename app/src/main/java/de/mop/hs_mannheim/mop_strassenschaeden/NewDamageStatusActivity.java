@@ -16,6 +16,7 @@ public class NewDamageStatusActivity extends AppCompatActivity {
 
     Button imageButton;
     ImageView imageView;
+    Button sendButton;
 
     static final int CAM_REQUEST = 1;
 
@@ -26,6 +27,7 @@ public class NewDamageStatusActivity extends AppCompatActivity {
 
         imageButton = (Button) findViewById(R.id.captureDamageButton);
         imageView = (ImageView) findViewById(R.id.picturePreview);
+        sendButton = (Button) findViewById(R.id.sendStatus);
 
         imageButton.setOnClickListener(new View.OnClickListener(){
 
@@ -39,6 +41,16 @@ public class NewDamageStatusActivity extends AppCompatActivity {
 
             }
         });
+
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+
     }
 
     private File getFile(){
