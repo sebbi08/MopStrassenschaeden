@@ -28,6 +28,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private LocationTracker tracker;
     private GoogleApiClient googleApiClient;
+    private LatLng position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +45,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onButtonClick(View view){
         if(view.getId() == R.id.sendNewStatus){
-            Intent i = new Intent(MainActivity.this, NewDamageStatusActivity.class);
-            startActivity(i);
+            Intent newDatamageIntent = new Intent(MainActivity.this, NewDamageStatusActivity.class);
+            newDatamageIntent.putExtra("Lat", position.latitude);
+            newDatamageIntent.putExtra("Lon", position.longitude);
+            startActivity(newDatamageIntent);
         }
     }
 
@@ -80,9 +83,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         Location loc = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        LatLng position = new LatLng(loc.getLatitude(),loc.getLongitude());
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,19.0f));
-        mMap.addMarker(new MarkerOptions().title("YOUR POSITION").position(position));
+        if(loc != null) {
+            position = new LatLng(loc.getLatitude(),loc.getLongitude());
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,19.0f));
+            mMap.addMarker(new MarkerOptions().title("YOUR POSITION").position(position));
+        }else{
+            position = new LatLng(52.5167,13.4);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,19.0f));
+            mMap.addMarker(new MarkerOptions().title("No Position Found").position(position));
+        }
     }
 
     @Override
