@@ -70,6 +70,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 mMap.clear();
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,17.0f));
                 mMap.addMarker(new MarkerOptions().title("Deine Position").position(latLng));
+                position = latLng;
             }
         });
         tracker.connect();
