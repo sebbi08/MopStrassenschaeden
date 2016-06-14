@@ -64,6 +64,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mMap.clear();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,17.0f));
+                mMap.addMarker(new MarkerOptions().title("Deine Position").position(latLng));
+            }
+        });
         tracker.connect();
     }
 
@@ -85,12 +93,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         Location loc = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         if(loc != null) {
             position = new LatLng(loc.getLatitude(),loc.getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,19.0f));
-            mMap.addMarker(new MarkerOptions().title("YOUR POSITION").position(position));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,17.0f));
+            mMap.addMarker(new MarkerOptions().title("Deine Position").position(position));
         }else{
             position = new LatLng(52.5167,13.4);
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,19.0f));
-            mMap.addMarker(new MarkerOptions().title("No Position Found").position(position));
+            mMap.addMarker(new MarkerOptions().title("Keine Position Gefunden").position(position));
         }
     }
 

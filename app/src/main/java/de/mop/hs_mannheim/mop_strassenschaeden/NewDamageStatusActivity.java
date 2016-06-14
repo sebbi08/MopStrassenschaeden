@@ -1,13 +1,16 @@
 package de.mop.hs_mannheim.mop_strassenschaeden;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,8 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -55,9 +56,14 @@ public class NewDamageStatusActivity extends AppCompatActivity {
      */
     private GoogleApiClient client;
 
-    OkHttpClient okclient = new OkHttpClient();
+    private OkHttpClient okclient = new OkHttpClient();
 
-    LatLng loc;
+
+    private JSONObject postData;
+
+    private LatLng loc;
+
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +79,8 @@ public class NewDamageStatusActivity extends AppCompatActivity {
         beschreibung = (EditText) findViewById(R.id.beschreibung);
 
         file = getFile();
+
+        this.context = this;
 
         imageButton.setOnClickListener(new View.OnClickListener() {
 
@@ -90,7 +98,13 @@ public class NewDamageStatusActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!file.exists()) return;
+                if(!file.exists()){
+                    AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                    alert.setMessage("Bitte eine Bild aufnehmen");
+                    alert.setTitle("Kein Bild");
+                    alert.create().show();
+                    return;
+                }
                 Bitmap bm = BitmapFactory.decodeFile(path);
 
 
@@ -100,28 +114,57 @@ public class NewDamageStatusActivity extends AppCompatActivity {
                     bm.compress(Bitmap.CompressFormat.JPEG, 75, bos);
                     byte[] data = bos.toByteArray();
 
-                    JSONObject postData = new JSONObject();
+                    postData = new JSONObject();
                     postData.put("tiel",titel.getText());
                     postData.put("beschreibung",beschreibung.getText());
                     postData.put("bild",data);
                     postData.put("Location",loc.toString());
 
 
+                    AsyncTask<String,Void,String> task = new AsyncTask<String,Void,String>(){
 
-                    post(URL,postData.toString());
+                        @Override
+                        protected String doInBackground(String... params) {
+
+                            try {
+                                post(params[0],params[1]);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            return "ok";
+                        }
+
+                        @Override
+                        protected void onPostExecute(String s) {
+                            super.onPostExecute(s);
+                            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+                            alert.setMessage("Bericht Gesendet");
+                            alert.setTitle("Erfolg");
+                            alert.create().show();
+                            titel.setText("");
+                            beschreibung.setText("");
+                            resettFile();
+                            imageView.setImageDrawable(Drawable.createFromPath(path));
+                        }
+                    };
+
+                    task.execute(URL,postData.toString());
 
 
 
                 } catch (Exception e) {
-                    Log.e(e.getClass().getName(), e.getMessage());
+                    e.printStackTrace();
                 }
             }
         });
+    }
 
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    private void resettFile() {
+        File fileToDelete = new File("sdcard/strassenschaden_meldung/damage_status_image.jpg");
+        if (fileToDelete.exists()) {
+            fileToDelete.delete();
+        }
+        file = getFile();
     }
 
     private File getFile() {
@@ -137,49 +180,12 @@ public class NewDamageStatusActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        File file = new File(path);
+        if(file.exists())
         imageView.setImageDrawable(Drawable.createFromPath(path));
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "NewDamageStatus Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://de.mop.hs_mannheim.mop_strassenschaeden/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "NewDamageStatus Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://de.mop.hs_mannheim.mop_strassenschaeden/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
-    }
 
     private String post (String url, String json)throws IOException {
         RequestBody body = RequestBody.create(JSON, json);
