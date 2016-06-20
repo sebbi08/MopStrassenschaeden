@@ -115,7 +115,7 @@ public class NewDamageStatusActivity extends AppCompatActivity {
                     byte[] data = bos.toByteArray();
 
                     postData = new JSONObject();
-                    postData.put("tiel",titel.getText());
+                    postData.put("titel",titel.getText());
                     postData.put("beschreibung",beschreibung.getText());
                     postData.put("bild",data);
                     postData.put("Location",loc.toString());
