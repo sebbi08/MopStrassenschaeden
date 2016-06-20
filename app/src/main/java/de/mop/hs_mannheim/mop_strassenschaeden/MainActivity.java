@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -44,6 +45,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void onButtonClick(View view){
+        if(position == null){
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage("Bitte wählen sie einen Standort für die Schadensmeldung");
+            alert.setTitle("Keine Standort");
+            alert.create().show();
+            return;
+        }
         if(view.getId() == R.id.sendNewStatus){
             Intent newDatamageIntent = new Intent(MainActivity.this, NewDamageStatusActivity.class);
             newDatamageIntent.putExtra("Lat", position.latitude);
@@ -52,15 +60,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -97,9 +97,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,17.0f));
             mMap.addMarker(new MarkerOptions().title("Deine Position").position(position));
         }else{
-            position = new LatLng(52.5167,13.4);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,19.0f));
-            mMap.addMarker(new MarkerOptions().title("Keine Position Gefunden").position(position));
+            position = null;
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.setMessage("Bitte wählen Sie manuell den Standort");
+            alert.setTitle("Keine Position Gefunden");
+            alert.create().show();
         }
     }
 
